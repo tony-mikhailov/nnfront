@@ -34,12 +34,15 @@ st.text_input("Query", key="query")
 op = st.selectbox("Whaht to do?", ['Chat', 'Img generation'])
 
 
-if st.session_state.query == '':
-    exit()
+# if not( "query" in st.session_state):
+#   st.session_state.query = ''
 
 if op == 'Chat':
 
   st.write("Process request: ", st.session_state.query)
+
+  if st.session_state.query == '':
+    exit()
   
   start_time = time.time()
   response = openai.ChatCompletion.create(
@@ -66,10 +69,13 @@ if op == 'Chat':
 
   st.write(f"proc time {response_time:.2f} seconds after request")
 else:
+
   dt = datetime.now() - st.session_state.last_req
+
   if dt.total_seconds() / 60.0 < 1:
     st.write(f"Please wait a {60.0 - dt.total_seconds()} seconds" )
     exit()
+
 
   st.session_state.last_req = datetime.now()
 
