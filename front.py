@@ -22,17 +22,13 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 model = st.selectbox("NNModel", get_models(), index=get_model_index('gpt-3.5-turbo'))
 
-
 img_count = st.slider('Images count', min_value=1, max_value=5)
 temperature = st.slider('Temperature', min_value=0.0, max_value=1.0, step=0.01)
-
 
 st.text_input("System", key="system_query")
 st.text_input("Query", key="query")
 
-
 op = st.selectbox("Whaht to do?", ['Chat', 'Img generation'])
-
 
 # if not( "query" in st.session_state):
 #   st.session_state.query = ''
@@ -55,9 +51,7 @@ if op == 'Chat':
   )
   
   filename = f'{root_dir}/{datetime.now().strftime("%Y%m%dT%H%M%S")}_{model}.txt'
-  
   response_time = time.time() - start_time
-
   # print the time delay and text received
   
   st.write(response['choices'][0]['message']['content'])
@@ -70,15 +64,14 @@ if op == 'Chat':
   st.write(f"proc time {response_time:.2f} seconds after request")
 else:
 
-  dt = datetime.now() - st.session_state.last_req
-
-  if dt.total_seconds() / 60.0 < 1:
-    st.write(f"Please wait a {60.0 - dt.total_seconds()} seconds" )
-    exit()
+  if (hasattr(st.session_state, 'last_req')):
+    dt = datetime.now() - st.session_state.last_req
+    if dt.total_seconds() / 60.0 < 1:
+      st.write(f"Please wait a {60.0 - dt.total_seconds()} seconds" )
+      exit()
 
 
   st.session_state.last_req = datetime.now()
-
   st.write("Process request: ", st.session_state.query)
 
   prompt=st.session_state.query 
